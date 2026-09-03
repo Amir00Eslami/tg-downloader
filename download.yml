@@ -1,0 +1,30 @@
+name: Download and Upload to Telegram
+
+on:
+  workflow_dispatch:
+    inputs:
+      download_url:
+        description: 'لینک دانلود مستقیم'
+        required: true
+
+jobs:
+  download-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install telethon requests
+
+      - name: Download and Upload
+        env:
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+          DOWNLOAD_URL: ${{ github.event.inputs.download_url }}
+        run: python downloader.py
